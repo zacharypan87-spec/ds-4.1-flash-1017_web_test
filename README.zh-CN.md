@@ -1,4 +1,4 @@
-﻿> English version: [README.md](README.md)
+> English version: [README.md](README.md)
 
 # DeepSeek 4.1 Flash 1017 · 概念发布页
 

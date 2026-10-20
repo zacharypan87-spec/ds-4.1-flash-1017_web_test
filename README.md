@@ -1,4 +1,4 @@
-﻿# DeepSeek 4.1 Flash 1017 — Concept Landing Page
+# DeepSeek 4.1 Flash 1017 — Concept Landing Page
 
 A static, single-page concept site for a fictional low-latency inference model.
 The page is built as a **deep-sea photo essay**: full-bleed colour chapters, real NOAA deep-sea photography, and a liquid-glass interface layer on top.
