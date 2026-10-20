@@ -10,3 +10,5 @@ Thumbs.db
 desktop.ini
 # 临时 GitHub token（推送后立即删除，绝不提交）
 _token.txt
+# Wrangler 本地缓存（含账号信息，绝不提交）
+.wrangler/
