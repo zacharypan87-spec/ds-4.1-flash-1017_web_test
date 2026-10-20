@@ -43,9 +43,9 @@
     .gitignore              ← _shots/、.taste-skill/ 不进仓库
   ```
 - 本地已初始化 git 仓库，分支 `main`，完成首次提交。
-- 远程地址已配置为：`https://github.com/ZJP123-Hub/deepseek-4.1-flash-1017_web.git`
+- 远程地址已配置为：`https://github.com/zacharypan87-spec/ds-4.1-flash-1017_web_test.git`
   （如果这不是你的 GitHub 用户名/想要的仓库名，改掉即可，见 §2.4）
-- **已推送并验证**：代码已经在 **<https://github.com/ZJP123-Hub/deepseek-4.1-flash-1017_web>** 上（公开仓库，`main` 分支，提交 `2d4c718`）。我逐文件核对过 raw 内容：`public/index.html` 200 / 65,927 字节 / 标题正确，5 张图片都是 `image/jpeg` 200，`_headers`、`robots.txt` 也都是 200。
+- **已推送并验证**：代码已经在 **<https://github.com/zacharypan87-spec/ds-4.1-flash-1017_web_test>** 上（公开仓库，`main` 分支，提交 `00ee167`）。我逐文件核对过 raw 内容：`public/index.html` 200 / 65,927 字节 / 标题正确，5 张图片都是 `image/jpeg` 200，`_headers`、`robots.txt` 也都是 200。
 - 本地已配置好 upstream：`git status` 显示 `## main...origin/main`，以后 `git push` 即可更新。
 
 ### 已用 Edge 做过的本地验收（发布前的基线）
@@ -70,11 +70,11 @@
 
 ### 2.1 创建一个空仓库
 
-1. 用 **Edge** 打开 <https://github.com/new>（没登录就先登录，账号应是 `ZJP123-Hub`）。
+1. 用 **Edge** 打开 <https://github.com/new>（没登录就先登录，账号应是 `zacharypan87-spec`）。
 2. **Repository name** 填：`deepseek-4.1-flash-1017`
 3. 可见性：**Public**（私有仓库也能接 Cloudflare Pages，但公开仓库授权更简单）
 4. **不要**勾选 “Add a README file / Add .gitignore / Choose a license” —— 仓库必须是空的，否则第一次推送会冲突。
-5. 点 **Create repository**，复制页面上显示的 HTTPS 地址（形如 `https://github.com/ZJP123-Hub/deepseek-4.1-flash-1017_web.git`）。
+5. 点 **Create repository**，复制页面上显示的 HTTPS 地址（形如 `https://github.com/zacharypan87-spec/ds-4.1-flash-1017_web_test.git`）。
 
 ### 2.2 推送（在 PowerShell 里执行一条命令）
 
@@ -109,7 +109,7 @@ git push -u origin main
 
 1. 在 **Edge** 打开 <https://github.com/settings/tokens> → **Generate new token (classic)**。
 2. Note 随便写，Expiration 选 7 天，勾选 **`repo`**（或只勾 `public_repo`）→ Generate → 复制 `ghp_...`。
-3. 运行 `git push -u origin main`，在 GCM 弹窗里选 **Use a token**，用户名填 `ZJP123-Hub`，密码粘贴 PAT。
+3. 运行 `git push -u origin main`，在 GCM 弹窗里选 **Use a token**，用户名填 `zacharypan87-spec`，密码粘贴 PAT。
 4. 推送完成后建议立刻在 GitHub 上 Revoke 这个 token（或等它 7 天过期）。
 
 ### 2.4 备选：不想配 git 凭据（Edge 网页上传）
@@ -128,13 +128,13 @@ git push -u origin main
 
 1. 用 **Edge** 打开 <https://dash.cloudflare.com/>，注册/登录（免费计划即可，**不需要先买域名**）。
 2. 左侧菜单 → **Workers & Pages** → 右上 **Create application** → 切到 **Pages** 标签 → **Connect to Git**。
-3. 点 **Connect GitHub** → **Install & Authorize**，在 GitHub 授权页里选 **Only select repositories** → 选 `deepseek-4.1-flash-1017_web` → **Install**。
+3. 点 **Connect GitHub** → **Install & Authorize**，在 GitHub 授权页里选 **Only select repositories** → 选 `ds-4.1-flash-1017_web_test` → **Install**。
 4. 回到 Cloudflare，选中这个仓库 → **Begin setup**。
 5. 按下表填写（**这就是针对当前网站的正确值**）：
 
 | 字段 | 填什么 | 说明 |
 | --- | --- | --- |
-| Project name | `deepseek-4-1-flash-1017` | 会变成 `https://deepseek-4-1-flash-1017.pages.dev`；只能小写字母/数字/连字符 |
+| Project name | `ds-4-1-flash-1017-web` | 会变成 `https://ds-4-1-flash-1017-web.pages.dev`；只能小写字母/数字/连字符 |
 | Production branch | `main` | 本地分支已叫 main |
 | Framework preset | **None** | 没有框架 |
 | Build command | **留空** | 没有构建步骤，不要填 `npm run build` |
@@ -143,7 +143,7 @@ git push -u origin main
 | Environment variables | 不填 | 没有需要注入的东西 |
 
 6. 点 **Save and Deploy**，等 30–60 秒。
-7. 顶部会出现免费网址：`https://deepseek-4-1-flash-1017.pages.dev`（项目名不同则前缀不同）。
+7. 顶部会出现免费网址：`https://ds-4-1-flash-1017-web.pages.dev`（项目名不同则前缀不同）。
 
 ---
 
