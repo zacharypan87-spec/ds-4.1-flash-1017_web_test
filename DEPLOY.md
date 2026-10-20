@@ -1,0 +1,168 @@
+# 部署到 Cloudflare Pages（GitHub + Edge）
+
+> 这份文档只讲发布。网站本身的设计说明在 `README.md`。
+
+## 0. 结论：这个网站适合 Cloudflare Pages 吗？
+
+**适合，而且是最省事的一类：纯静态站点。**
+
+| 检查项 | 结果 |
+| --- | --- |
+| 形态 | 1 个 `public/index.html`（HTML + 内联 CSS/JS）+ 5 张 JPG + 2 个文本文件 |
+| 体积 | 整站 **1.68 MB**（Pages 限制：单文件 25 MiB、20,000 个文件） |
+| 构建 | **不需要**：没有 npm、没有打包器、没有框架 |
+| 后端 | 不需要：没有任何 API、表单提交走 `mailto:`、无数据库 |
+| 路由 | 单页，不需要 SPA 回退规则 |
+| 路径 | 资源全是相对路径（`assets/...`），挂在 pages.dev 根域或自定义域名都正常 |
+| 外部依赖 | Google Fonts（`fonts.googleapis.com` / `fonts.gstatic.com`）。已写系统字体回退，字体拉不到时版面不变 |
+| 安全/缓存 | 已加 `public/_headers`（nosniff、Referrer-Policy、图片长缓存）与 `public/robots.txt` |
+
+两个已知代价（不影响发布，只影响体验）：
+
+1. **中国大陆访问**：`*.pages.dev` 和 Google Fonts 在大陆都不稳定，可能需要代理；页面本身会回退到系统中文字体，不会白屏。
+2. **概念页标识**：页面用的是 DeepSeek 的名字和鲸鱼意象，页脚已写「本页是 DeepSeek 4.1 Flash 的概念发布页」。如果要公开传播，建议再加「非官方」三个字，避免被当成官方发布（要加的话告诉我）。
+
+---
+
+## 1. 当前状态（我已经做好的部分）
+
+- 站点已整理成「发布目录 + 文档」结构：**只有 `public/` 会被发布**
+  ```
+  deepseek-4.1-flash-v2/
+    public/                 ← Cloudflare Pages 的输出目录
+      index.html
+      _headers
+      robots.txt
+      assets/
+        img/*.jpg
+        manifest.json
+        CREDITS.md
+    README.md
+    COPY.md
+    DEPLOY.md
+    .gitignore              ← _shots/、.taste-skill/ 不进仓库
+  ```
+- 本地已初始化 git 仓库，分支 `main`，完成首次提交。
+- 远程地址已配置为：`https://github.com/ZJP123-Hub/deepseek-4.1-flash-1017.git`
+  （如果这不是你的 GitHub 用户名/想要的仓库名，改掉即可，见 §2.4）
+- **还没有推送成功**：这台机器上没有 GitHub CLI，也没有 GitHub 令牌。GitHub 的那一步需要你在 **Edge** 里点一次授权（见下）。
+
+---
+
+## 2. 第一步：把代码放到 GitHub（在 Edge 里操作）
+
+### 2.1 创建一个空仓库
+
+1. 用 **Edge** 打开 <https://github.com/new>（没登录就先登录，账号应是 `ZJP123-Hub`）。
+2. **Repository name** 填：`deepseek-4.1-flash-1017`
+3. 可见性：**Public**（私有仓库也能接 Cloudflare Pages，但公开仓库授权更简单）
+4. **不要**勾选 “Add a README file / Add .gitignore / Choose a license” —— 仓库必须是空的，否则第一次推送会冲突。
+5. 点 **Create repository**，复制页面上显示的 HTTPS 地址（形如 `https://github.com/ZJP123-Hub/deepseek-4.1-flash-1017.git`）。
+
+### 2.2 推送（在 PowerShell 里执行一条命令）
+
+如果仓库名/用户名与上面一致，本地已经配好远程，直接：
+
+```powershell
+cd C:\Users\张锦鹏\Desktop\Mv\deepseek-4.1-flash-v2
+git push -u origin main
+```
+
+- 第一次推送会弹出 **Git Credential Manager** 窗口（通常会自动打开浏览器）：
+  选 **Sign in with your browser** → 用 **Edge** 登录 GitHub → 点 **Authorize**。
+- 看到 `main -> main` 就成功了。
+
+如果用户名/仓库名不同，先改远程地址再推送：
+
+```powershell
+git remote set-url origin https://github.com/<你的用户名>/<你的仓库名>.git
+git push -u origin main
+```
+
+### 2.3 确认真的在 GitHub 上
+
+刷新仓库页面，应该能看到 `public/`、`README.md`、`COPY.md`、`DEPLOY.md`、`.gitignore`。
+也可以把仓库地址发给我，我直接查 GitHub API 确认提交存在。
+
+### 2.4 备选：不想配 git 凭据（Edge 网页上传）
+
+在空仓库页面 → **Add file → Upload files** → 把下面这些拖进去 → **Commit changes**：
+
+- `public/` 整个文件夹（必须保留 `public/` 这一层）
+- `README.md`、`COPY.md`、`DEPLOY.md`、`.gitignore`
+
+> 网页上传也能用，但以后更新要重复拖拽；推荐还是走 §2.2 的 git 推送。
+> 如果愿意装 GitHub CLI：`winget install --id GitHub.cli -e`，然后 `gh auth login`（选 GitHub.com → HTTPS → Login with a web browser），告诉我一声，我可以直接用 `gh` 建仓库并推送。
+
+---
+
+## 3. 第二步：连接 Cloudflare Pages（在 Edge 里操作）
+
+1. 用 **Edge** 打开 <https://dash.cloudflare.com/>，注册/登录（免费计划即可，**不需要先买域名**）。
+2. 左侧菜单 → **Workers & Pages** → 右上 **Create application** → 切到 **Pages** 标签 → **Connect to Git**。
+3. 点 **Connect GitHub** → **Install & Authorize**，在 GitHub 授权页里选 **Only select repositories** → 选 `deepseek-4.1-flash-1017` → **Install**。
+4. 回到 Cloudflare，选中这个仓库 → **Begin setup**。
+5. 按下表填写（**这就是针对当前网站的正确值**）：
+
+| 字段 | 填什么 | 说明 |
+| --- | --- | --- |
+| Project name | `deepseek-4-1-flash-1017` | 会变成 `https://deepseek-4-1-flash-1017.pages.dev`；只能小写字母/数字/连字符 |
+| Production branch | `main` | 本地分支已叫 main |
+| Framework preset | **None** | 没有框架 |
+| Build command | **留空** | 没有构建步骤，不要填 `npm run build` |
+| Build output directory | `public` | 站点在 `public/`，这是唯一的必填项 |
+| Root directory | 留空（= `/`） | 仓库根目录就是项目目录 |
+| Environment variables | 不填 | 没有需要注入的东西 |
+
+6. 点 **Save and Deploy**，等 30–60 秒。
+7. 顶部会出现免费网址：`https://deepseek-4-1-flash-1017.pages.dev`（项目名不同则前缀不同）。
+
+---
+
+## 4. 第三步：告诉我网址，我来做访问检查
+
+把 `https://xxxx.pages.dev` 发给我，我会用 **Edge（headless）+ HTTP** 检查：
+
+- [ ] 首页返回 **200**，HTML 里含 `DeepSeek 4.1 Flash 1017` 标题
+- [ ] 5 张图片全部 200 且 `Content-Type: image/jpeg`
+- [ ] `assets/manifest.json`、`_headers` 生效（响应头里有 `X-Content-Type-Options`）
+- [ ] Google Fonts 是否可达（不可达时应回退系统字体，页面仍完整）
+- [ ] Edge 截图首屏 / 玻璃工具栏 / 请求卡片，确认无 404、无控制台报错、无横向溢出
+- [ ] HTTPS 证书与 `pages.dev` 解析正常
+
+我也可以顺便跑一遍移动端（390px）截图确认。
+
+---
+
+## 5. 自定义域名（可选）
+
+1. Pages 项目 → **Custom domains** → **Set up a custom domain**。
+2. 输入你的域名（如 `flash.example.com`）。
+3. 分两种情况：
+   - **域名已托管在 Cloudflare**：会自动加 CNAME，等 1–5 分钟即可。
+   - **域名在别处**：去域名服务商加记录 —— 子域名加 `CNAME → <project>.pages.dev`；根域（apex）多数服务商不支持 CNAME，建议用 `www` 子域，或把域名的 NS 迁到 Cloudflare。
+4. Cloudflare 会自动签发并续期 HTTPS 证书，无需手工配置。
+5. 换域名后不需要改代码：页面资源全是相对路径。
+
+---
+
+## 6. 以后更新
+
+```powershell
+cd C:\Users\张锦鹏\Desktop\Mv\deepseek-4.1-flash-v2
+# 改 public/index.html 或替换 public/assets/img/... 里的图片
+git add -A
+git commit -m "update copy"
+git push
+```
+
+Cloudflare 检测到 `main` 分支新提交后会自动重新部署，约 30 秒后 pages.dev 域名生效。
+需要回滚时，在 Pages 项目的 **Deployments** 里对任一历史版本点 **Rollback**。
+
+---
+
+## 7. 备注
+
+- 不需要 Cloudflare 的构建镜像/Node 版本/环境变量；这个站点没有任何构建产物。
+- 不建议把 `_shots/`、`.taste-skill/` 一起发布：`.gitignore` 已经排除，`public/` 里也没有它们。
+- 如果以后想把字体也本地化（彻底去掉 Google Fonts 依赖），我可以把字体子集下载进 `public/assets/fonts/` 并改成 `@font-face`，这样中国大陆访问也不会掉字体。

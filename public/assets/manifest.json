@@ -1,0 +1,67 @@
+﻿[
+    {
+        "file":  "img/01-halitrephes.jpg",
+        "slot":  "interlude-wide: Halitrephes maasi medusa, 16:10 crop",
+        "title":  "Halitrephes Maasi",
+        "creator":  "NOAA Office of Ocean Exploration and Research",
+        "license":  "Public domain",
+        "licenseUrl":  "",
+        "source":  "https://commons.wikimedia.org/wiki/File:Halitrephes_Maasi.jpg",
+        "provider":  "Wikimedia Commons",
+        "width":  1280,
+        "height":  720,
+        "note":  null
+    },
+    {
+        "file":  "img/02-benthocodon-hyalinus.jpg",
+        "slot":  "intro mosaic tile C: Benthocodon hyalinus, 4:3 crop",
+        "title":  "Benthocodon hyalinus Chukchi Borderlands",
+        "creator":  "Caitlin Bailey, GFOE, NOAA Office of Ocean Exploration and Research",
+        "license":  "Public domain",
+        "licenseUrl":  "",
+        "source":  "https://commons.wikimedia.org/wiki/File:Benthocodon_hyalinus_Chukchi_Borderlands.jpg",
+        "provider":  "Wikimedia Commons",
+        "width":  3840,
+        "height":  2543,
+        "note":  null
+    },
+    {
+        "file":  "img/02-marrus.jpg",
+        "slot":  "interlude-tall: Marrus orthocanna siphonophore, 3:4 portrait",
+        "title":  "Marrus orthocanna",
+        "creator":  "Kevin Raskoff, Monterey Peninsula College",
+        "license":  "Public domain",
+        "licenseUrl":  "",
+        "source":  "https://commons.wikimedia.org/wiki/File:Marrus_orthocanna.jpg",
+        "provider":  "Wikimedia Commons",
+        "width":  1920,
+        "height":  2723,
+        "note":  null
+    },
+    {
+        "file":  "img/03-dumbo-square.jpg",
+        "slot":  "capability plate: dumbo octopus, pre-cropped 1:1",
+        "title":  "Dumbo-hires (dumbo octopus, Grimpoteuthis)",
+        "creator":  "NOAA Okeanos Explorer",
+        "license":  "Public domain",
+        "licenseUrl":  "",
+        "source":  "https://commons.wikimedia.org/wiki/File:Dumbo-hires.jpg",
+        "provider":  "Wikimedia Commons",
+        "width":  720,
+        "height":  720,
+        "note":  "Cropped to a 1:1 square from the 1600x900 original; the animal is Grimpoteuthis, filmed by NOAA Okeanos Explorer."
+    },
+    {
+        "file":  "img/06-coral.jpg",
+        "slot":  "interlude-pano: coral garden Sibelius Seamount, 21:9 crop",
+        "title":  "Coral garden Sibelius Seamount",
+        "creator":  "NOAA Office of Ocean Exploration and Research, Deep-Sea Symphony: Exploring the Musicians Seamounts",
+        "license":  "Public domain",
+        "licenseUrl":  "",
+        "source":  "https://commons.wikimedia.org/wiki/File:Coral_garden_Sibelius_Seamount.jpg",
+        "provider":  "Wikimedia Commons",
+        "width":  1280,
+        "height":  720,
+        "note":  null
+    }
+]
