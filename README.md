@@ -1,104 +1,116 @@
-﻿# DeepSeek 4.1 Flash 1017 · 概念发布页
+﻿# DeepSeek 4.1 Flash 1017 — Concept Landing Page
 
-一个纯静态的单页宣传站（发布目录 `public/`，发布步骤见 `DEPLOY.md`）：双击 `public/index.html` 即可打开，无需构建、无需服务器。
+A static, single-page concept site for a fictional low-latency inference model.
+The page is built as a **deep-sea photo essay**: full-bleed colour chapters, real NOAA deep-sea photography, and a liquid-glass interface layer on top.
 
-> 线上地址：<https://ds-4-1-flash-1017-web.pages.dev>（Cloudflare Pages 免费版）。
-字体走 Google Fonts（Noto Sans SC / Red Hat Display），断网时会回退到系统中文黑体，页面仍完整可读。
+**Live demo:** <https://ds-4-1-flash-1017-web.pages.dev>
 
-> 版本名沿用你给的 **DeepSeek 4.1 Flash 1017**：出现在标题、导航、首屏文案、请求卡片构建号与页脚；首屏圆盘上有一枚液态玻璃的「版本 1017」胶囊。
+> This is an independent design concept, not an official DeepSeek release. All performance numbers, prices and dates are illustrative placeholders.
+
 
 ---
 
-## 一、这一页在讲什么
+## What it is
 
-> **深海里的无人区，探测器用一次闪光看清周围。DeepSeek 的名字来自深海，Flash 是那次闪光。**
+- **One static HTML file** (`public/index.html`, inline CSS + JS, no build step) plus 5 photographs.
+- **A marketing argument, not a template.** The product’s name is a collision: *DeepSeek* (the deep sea, the whale) and *Flash* (a burst of light). The page turns that into a sequence of exposures — paper white → black water → electric blue → deep-sea red → photographs → a lit request card → a giant wordmark.
+- **A working live thing:** the “一次请求 / One request” card. Four real controls (task, context window, streaming, thinking depth) rewrite the response card instantly.
+- Designed and tested at 1440 / 768 / 390 px; each breakpoint is its own composition.
 
-整页按「一次曝光」来编排：纸白 → 黑水 → 电蓝 → 一抹深海红 → 深海照片 → 白色展板 → 暗房里的请求 → 收尾的巨型字标。
-配色是深海摄影本身的颜色：黑水、探照灯的白、电蓝、以及深海动物那种「因为红光到不了、所以没有天敌看得见」的红。
+## Sections
 
-- 设计方向来自 `design-taste-frontend` 的 **colour-chapters**（seed 257652249）：每一节是整幅平涂色块，像一排海报。
-- 核心句：*页面上，DeepSeek 的「深海」与 Flash 的「一次闪光」变成一串整幅的色块章节，让读者从纸白闪进黑水，再回到光里。*
-- 唯一「活的东西」：**一次请求**。右边四个参数（场景 / 上下文 / 流式 / 思考深度）会立刻重写左边那张白色的回答卡片。
-
-## 二、液态玻璃（本轮新增）
-
-按要求加入了 Apple Liquid Glass 语言的材质，**只放在界面层**，让色块章节本身保持干净：
-
-- **首屏蓝色圆盘** → 玻璃球：柔和主高光 + 右下反射光 + 边缘内高光，高光会非常慢地漂移（`prefers-reduced-motion` 下停止）。
-- **版本胶囊**「版本 1017」：浮在蓝球上的磨砂玻璃胶囊。
-- **浮动玻璃工具栏**：向下滚动时隐藏，向上滚动（或回看）时从顶部浮出；品牌 + 锚点链接 + 申请按钮。向下滚动不遮挡内容。
-- **一次请求卡片**：磨砂玻璃板，背后加了一圈很淡的蓝色「探照灯」光晕，玻璃边缘因此有蓝色透光；内部仍是产品自己的界面语言（`data-ui`）。
-- **计算器面板**：电蓝章节上的磨砂面板 + 内高光边。
-- **按钮 / 内测输入框**：高光渐变 + 内阴影 + 外部软投影的「玻璃按钮」和胶囊输入框。
-- 玻璃件都带 1px 内高光边、顶部镜面高光和彩色边缘反光，悬停/按压缩放属于同一套反馈。
-
-> 说明：这个材质与上一版遵循的「反玻璃/反渐变/反阴影」规则是冲突的，本轮按你的要求覆盖，只作用于上述界面件，页面其余部分仍保持平涂色块。因此：
-> - `inspect.mjs` 需要用 `--allow gradient,shadow,glass,button-fx` 跑（否则这些规则会报 FAIL）；
-> - `lint.mjs` 会报 6 条 `glass` WARN（backdrop blur），这是材质的预期成本，没有隐藏；
-> - 渐变/阴影行都带了 `taste-skill-ignore: liquid glass` 标注，说明是有意为之。
-> 如果反悔，删掉 `public/index.html` 里「17 · LIQUID GLASS」整段 CSS 与 `.glass`、`.dock`、`.version` 相关标记即可回到纯平涂版本。
-
-## 三、页面结构
-
-| 节 | 内容 | 形式 |
+| # | Section | Form |
 | --- | --- | --- |
-| Hero | 思考不必等待 / 闪光已经抵达 + 0.14s / 340 tok/s / 1M | 纸白 + 液态玻璃蓝球（右侧裁切） |
-| Intro | 名字的来源：「深海 / 闪光」 | 深黑色马赛克色块（蓝块 + 白块 0.14 + 深潜照片 + 正文） |
-| Speed | 每天，你省下多少等待？ | 电蓝满幅 + 玻璃计算器（1,000–1,000,000 次请求 → 小时） |
-| Capability band | 推理 · 代码 · 数学 · 长文 · 多语言 · 检索 · 智能体 · 翻译 | 深海红跑马灯条带 |
-| Deep | 这里的灯，是生物自己点的。 | 黑水照片散文：3 张真实深潜照片 + 图注 |
-| Capability plate | 先把问题拆开 / 写完就能跑 / 记得上下文在哪 | 白底 50/50：正方形照片 + 三个标签 + 两个操作块 |
-| Request | 一次请求 | 黑底玻璃卡片 + 四组真实控件（活的东西） |
-| Price | 一百万 token，¥0.5 起 | 黑底巨型价格句 + 蓝色价格块 |
-| FAQ | 常见问题（6 条） | 蓝题头 + 黑白交替的整幅条带 |
-| CTA | 把邮箱写进 ____ 就 申请内测 | 黑底「句子里的表单」+ 玻璃胶囊输入框 |
-| Footer | 巨型 DEEPSEEK 字标（白块中凿出蓝色字母） | 电蓝收尾 + 链接 + 图片版权行 |
+| 1 | Hero — *Thinking shouldn’t wait / The flash is already here* | Paper white + giant liquid-glass blue orb |
+| 2 | Why “Flash” — the name | Black mosaic of colour tiles (blue / white / photo) |
+| 3 | Wait calculator — *How much waiting do you save?* | Electric blue field + frosted calculator |
+| 4 | Capability marquee | Deep-sea red band, names running off both edges |
+| 5 | Deep-sea photo essay — *The light here is their own* | 3 real ROV photographs + captions |
+| 6 | Capability plate | White 50/50 split: square photo + tabs + two actions |
+| 7 | One request (interactive) | Black field, pinned frosted card + live controls |
+| 8 | Price | One giant sentence with a blue price block |
+| 9 | FAQ | Blue heading band + alternating black/white bands |
+| 10 | Apply — *Write your email into ___ and get in* | Sentence-shaped form (mailto, no backend) |
+| 11 | Footer | Giant DEEPSEEK wordmark knocked out of white blocks |
 
-## 四、交互与动效
+## Interactions
 
-- **计算器**：`次/天 × 1.66 秒 ÷ 3600` 实时算出「每天省下的等待」；首次进入视口有一次性数字滚动。
-- **一次请求卡片**：场景（推理/代码/长文/多语言）、上下文（8K/32K/128K/1M）、流式（流式/整段）、思考（快答/深思）四个控件；卡片主动画、代码块、思考 token 行会同步变化。
-- **能力 plate**：三个标签切换标题与说明（支持左右方向键）。
-- **内测表单**：本地校验邮箱，然后打开发往 `4.1flash@deepseek.com` 的邮件（无后端也能用）。
-- **浮动玻璃工具栏**：向上滚动浮出、向下滚动收起；触屏同样可用。
-- **动效**：标题遮罩上移、蓝球擦入 + 高光漂移、深潜照片快门揭示（`clip-path`）、各区块依次入场、跑马灯、长图滚动漂移、按钮按压缩放；全部支持 `prefers-reduced-motion`。
+- **Wait calculator** — `calls/day × 1.66 s ÷ 3600` updates a huge hours figure; one-time count-up on first view.
+- **Request card** — task (reasoning / code / long-form / multilingual), context (8K / 32K / 128K / 1M), streaming (on/off), thinking depth (fast / deep); the card’s answer, code block and metadata change accordingly.
+- **Capability plate** — three tabs switch title + description (arrow keys supported).
+- **Application form** — validates the email locally, then opens a `mailto:` draft (works with no backend).
+- **Floating glass toolbar** — appears when scrolling up, hides when scrolling down; never overlaps content while scrolling down.
+- Full `prefers-reduced-motion` support; no JavaScript required to read the page.
 
-## 五、照片（全部公有领域，来自 Wikimedia Commons）
+## Design notes
 
-页脚有完整版权行；`assets/CREDITS.md` 与 `assets/manifest.json` 有机器可读的完整记录。
+- Direction: **colour chapters** (from `design-taste-frontend` v2, seed `257652249`). Every section is one flat field floor-to-ceiling; the same 12-column grid and margins run through all of them.
+- Palette taken from deep-sea photography: black water, floodlight white, electric blue `#2436ff`, deep-sea red `#ff3b1f`. The red is a real phenomenon — red light never reaches that depth.
+- Type: **Noto Sans SC** 400/700/900 for Chinese, **Red Hat Display 900** for Latin display and numerals. Seven sizes total (15 / 18 / 24 / 32 / 44 / 107 / 274 px).
+- **Liquid glass layer** (requested by the client): the hero orb, floating toolbar, version chip, request card, calculator panel, buttons and the closing input. This deliberately overrides the base direction’s “no gradients / no shadows / no glass” rules — it is scoped to UI surfaces only; the colour chapters stay flat.
+- Photography is real ROV / submersible imagery from NOAA and partners, all public domain. One grade is applied to every image (slightly darker, slightly desaturated) so the set reads as one light source.
 
-| 文件 | 画面 | 作者 / 版权 |
+## Tech
+
+- Static HTML + inline CSS + vanilla JS. No framework, no bundler, no server.
+- 5 JPEG photographs + 2 text assets; **1.68 MB total**.
+- Google Fonts (Noto Sans SC, Red Hat Display) with a system-font fallback — the layout survives without network access.
+- `public/_headers` adds security headers and immutable caching for `/assets/*`; `public/robots.txt` allows indexing.
+
+## Repository layout
+
+```
+public/                 ← the deployed site (Cloudflare Pages output directory)
+  index.html
+  _headers
+  robots.txt
+  assets/img/*.jpg
+  assets/manifest.json  ← machine-readable image credits
+  assets/CREDITS.md
+README.md               ← this file
+README.zh-CN.md         ← Chinese design notes
+COPY.md                 ← copy deck (Chinese)
+DEPLOY.md               ← deployment notes (Chinese)
+```
+
+## Local preview
+
+Open `public/index.html` directly in a browser. Nothing needs installing.
+
+## Deploy
+
+Cloudflare Pages, **Direct Upload** (Cloudflare’s 2026 dashboard turns Git imports into Workers; this project is deployed as a real Pages project via the official CLI):
+
+```powershell
+npx --yes wrangler@4 pages deploy public `
+  --project-name=ds-4-1-flash-1017-web `
+  --branch=main --commit-dirty=true
+```
+
+First run on a new machine: `npx --yes wrangler@4 login` and approve in the browser.
+The site is source-controlled in `public/`; pushing to GitHub does not redeploy automatically (Direct Upload), so run the command above after changes.
+
+## Verification
+
+- Source lint (`lint.mjs`): **0 FAIL / 6 WARN** — the WARNs are the `backdrop-filter` declarations of the requested liquid-glass layer.
+- Browser inspection (`inspect.mjs`, 1440/768/390, run with `--allow gradient,shadow,glass,button-fx`): **0 FAIL / 1 WARN** — the only warning is “no video on the page”; no clean, licence-safe deep-sea clip could be obtained (available clips contain burned-in captions or ROV branding).
+- Live check (Edge headless, production URL): HTTP 200, correct title, 5/5 images served, 26 requests, 0 non-200, 0 failures, 0 horizontal overflow at 1440 and 390, fonts loaded.
+- `_headers` confirmed on the live site (`X-Content-Type-Options: nosniff`, `Referrer-Policy`, immutable image caching).
+
+## Photographs & credits
+
+All five photographs are **public domain**, downloaded from Wikimedia Commons.
+
+| File | Subject | Credit |
 | --- | --- | --- |
-| `assets/img/01-halitrephes.jpg` | Halitrephes maasi 水母，约 1,200 米 | NOAA Office of Ocean Exploration and Research，公有领域 |
-| `assets/img/02-benthocodon-hyalinus.jpg` | Benthocodon hyalinus 水母（楚科奇边境） | Caitlin Bailey / GFOE / NOAA OER，公有领域 |
-| `assets/img/02-marrus.jpg` | Marrus orthocanna 管水母 | Kevin Raskoff, Monterey Peninsula College，公有领域 |
-| `assets/img/03-dumbo-square.jpg` | 小飞象章鱼（已裁成 1:1） | NOAA Okeanos Explorer，公有领域 |
-| `assets/img/06-coral.jpg` | Sibelius 海山珊瑚园，2,465 米 | NOAA OER，公有领域 |
+| `assets/img/01-halitrephes.jpg` | *Halitrephes maasi* medusa, ~1,200 m | NOAA Office of Ocean Exploration and Research |
+| `assets/img/02-benthocodon-hyalinus.jpg` | *Benthocodon hyalinus*, Chukchi Borderlands | Caitlin Bailey, GFOE / NOAA OER |
+| `assets/img/02-marrus.jpg` | *Marrus orthocanna* siphonophore | Kevin Raskoff, Monterey Peninsula College |
+| `assets/img/03-dumbo-square.jpg` | Dumbo octopus (*Grimpoteuthis*) | NOAA Okeanos Explorer |
+| `assets/img/06-coral.jpg` | Coral garden, Sibelius Seamount, 2,465 m | NOAA OER / Musicians Seamounts expedition |
 
-照片统一做了轻微压暗/降饱和处理，让它们一起像同一束灯打出来的。
+Source pages and licence records: [`public/assets/CREDITS.md`](public/assets/CREDITS.md) and [`public/assets/manifest.json`](public/assets/manifest.json). Credits are also printed in the site footer.
 
-## 六、验收
+## Disclaimer
 
-- `node lint.mjs public/index.html`：**0 FAIL / 6 WARN**（WARN 全部是液态玻璃的 `backdrop-filter`，属预期）
-- `node inspect.mjs public/index.html --allow gradient,shadow,glass,button-fx`：**0 FAIL / 1 WARN** —— 唯一 WARN 是「页面无视频」。原因：Commons 的深潜视频在本机被限流取不到原片；能取到的几段都带烧录字幕/台标（违反素材规则），因此没有放视频。页面仍有「会动的图片」：长图的滚动漂移 + 跑马灯 + 照片快门 + 全部入场动效。
-- 交互自测：计算器、四组参数、卡片改写、plate 标签、邮箱校验全部通过；浮动工具栏的显示/隐藏逻辑单独测试通过（顶部隐藏 → 向下隐藏 → 向上浮出 → 回顶隐藏），无控制台报错。
-- 首屏按钮、焦点样式、alt 文本、语义标题、表单标签齐全；手机 390 与平板 768 是各自的排版，不是桌面缩放。
-
-## 七、需要你确认的示例内容（不是真实发布信息）
-
-这是一个**概念发布页**（页脚也已注明）。下面这些数字/承诺目前是演示用示例，正式使用前请替换：
-
-- 全部性能数字：0.14 秒首字 / 340 tok/s / 100 万上下文 / 上一代 1.80 秒对照 / 1.66 秒差 / 4.1×
-- 价格：¥0.5 输入 / ¥2 输出 / 缓存命中减 90%
-- 产品线：4.1 Flash 与 4.1 Pro 的定位差异；2026 Q1 以 MIT 许可开源的承诺
-- 内测信息：每周 500 个名额、200 万 token 试用额度、`4.1flash@deepseek.com`、杭州 · 西湖区
-- FAQ 里的实测条件与计费说明
-- 卡片里的示例问答（深海生物为什么发光）、代码片段、示例数据标注
-- 「1017」的含义：现在是版本/构建号，出现在标题、导航、首屏、卡片与页脚；如果它另有所指（日期、批次、参数规模），告诉我一句我改。
-
-## 八、设计记录
-
-- 方向：`colour-chapters`（`design-taste-frontend` / seed 257652249），全套按方向单执行；液态玻璃是后续按要求的覆盖层。
-- 字体槽位的重画：方向指定的 Red Hat Display 不含中文字形，因此中文使用 Noto Sans SC（400/700/900），Red Hat Display 只用于拉丁字标与大数字。全页仍保持 7 个字号（15 / 18 / 24 / 32 / 44 / 107 / 274）。
-- 每一节都换了构图（玻璃球 → 马赛克 → 满幅计算器 → 红条带 → 照片散文 → 50/50 → 固定卡片 → 巨型句 → 条带 → 句内表单 → 块状字标），没有卡片网格、没有细分割线。
-- 浏览器打开时请允许加载 Google Fonts；若离线，中文会使用系统字体（PingFang / 微软雅黑），版面不变。
+Independent concept page. Not affiliated with or endorsed by DeepSeek. “DeepSeek”, “4.1 Flash” and “1017” are used to describe a fictional product; all figures, prices, release dates and beta terms on the page are placeholders for demonstration.
