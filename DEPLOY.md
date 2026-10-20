@@ -45,7 +45,23 @@
 - 本地已初始化 git 仓库，分支 `main`，完成首次提交。
 - 远程地址已配置为：`https://github.com/ZJP123-Hub/deepseek-4.1-flash-1017.git`
   （如果这不是你的 GitHub 用户名/想要的仓库名，改掉即可，见 §2.4）
-- **还没有推送成功**：这台机器上没有 GitHub CLI，也没有 GitHub 令牌。GitHub 的那一步需要你在 **Edge** 里点一次授权（见下）。
+- **还没有推送成功**：我查了 GitHub API，`ZJP123-Hub/deepseek-4.1-flash-1017` 目前返回 404（仓库还不存在），本机也没有 GitHub 登录凭据（Windows 凭据管理器里没有 github.com）。所以严格来说，**代码现在只在本地，还没上 GitHub**。GitHub 那一步需要你在 **Edge** 里建一个空仓库并授权一次（见下）。
+
+### 已用 Edge 做过的本地验收（发布前的基线）
+
+我在这台机器上用 **Microsoft Edge（headless，155.0.4283.62）** 分别以 HTTP 服务、`file://` 两种方式打开 `public/index.html`，1440×900 与 390×844 两个尺寸：
+
+| 检查 | 结果 |
+| --- | --- |
+| 页面标题 | `DeepSeek 4.1 Flash 1017：思考不必等待` ✅ |
+| 5 张图片 | 全部加载（naturalWidth > 0）✅ |
+| 横向溢出 | 1440/390 均为 0px ✅ |
+| 请求 | 26 个请求，非 200：0，失败：0 ✅ |
+| 控制台错误 | 0 ✅ |
+| Google Fonts | 已加载（Noto Sans SC）；断网时会回退系统字体 |
+| 截图 | `_shots/edge-check/http-desktop.jpg`、`http-mobile.jpg`、`file-desktop.jpg` |
+
+> 也就是说：**这一份文件直接传到任何静态托管都能跑**；剩下要解决的只是 GitHub 授权本身。
 
 ---
 
@@ -68,8 +84,10 @@ cd C:\Users\张锦鹏\Desktop\Mv\deepseek-4.1-flash-v2
 git push -u origin main
 ```
 
-- 第一次推送会弹出 **Git Credential Manager** 窗口（通常会自动打开浏览器）：
-  选 **Sign in with your browser** → 用 **Edge** 登录 GitHub → 点 **Authorize**。
+- 第一次推送会弹出 **Git Credential Manager** 窗口，选 **Sign in with your browser** → 登录 GitHub → **Authorize**。
+  - 这台机器的默认浏览器是 Chrome，所以弹窗可能打开 Chrome；在 Chrome 里登录 GitHub 同样可以完成授权（不影响之后用 Edge 打开 GitHub/Cloudflare）。
+  - 想强制走 Edge：先临时把 Edge 设为默认浏览器；或者在 GCM 窗口里选 **Use a token**，粘贴 §2.5 的 PAT。
+  - 授权成功后回到终端，看到 `main -> main` 即完成。
 - 看到 `main -> main` 就成功了。
 
 如果用户名/仓库名不同，先改远程地址再推送：
@@ -83,6 +101,15 @@ git push -u origin main
 
 刷新仓库页面，应该能看到 `public/`、`README.md`、`COPY.md`、`DEPLOY.md`、`.gitignore`。
 也可以把仓库地址发给我，我直接查 GitHub API 确认提交存在。
+
+### 2.5 备选：用 Personal Access Token（PAT）推送
+
+如果不想在 GCM 里走浏览器授权：
+
+1. 在 **Edge** 打开 <https://github.com/settings/tokens> → **Generate new token (classic)**。
+2. Note 随便写，Expiration 选 7 天，勾选 **`repo`**（或只勾 `public_repo`）→ Generate → 复制 `ghp_...`。
+3. 运行 `git push -u origin main`，在 GCM 弹窗里选 **Use a token**，用户名填 `ZJP123-Hub`，密码粘贴 PAT。
+4. 推送完成后建议立刻在 GitHub 上 Revoke 这个 token（或等它 7 天过期）。
 
 ### 2.4 备选：不想配 git 凭据（Edge 网页上传）
 
