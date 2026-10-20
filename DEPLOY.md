@@ -48,6 +48,13 @@
 - **已推送并验证**：代码已经在 **<https://github.com/zacharypan87-spec/ds-4.1-flash-1017_web_test>** 上（公开仓库，`main` 分支，提交 `00ee167`）。我逐文件核对过 raw 内容：`public/index.html` 200 / 65,927 字节 / 标题正确，5 张图片都是 `image/jpeg` 200，`_headers`、`robots.txt` 也都是 200。
 - 本地已配置好 upstream：`git status` 显示 `## main...origin/main`，以后 `git push` 即可更新。
 
+### 已发布（2026-10-20）
+
+- **线上地址：<https://ds-4-1-flash-1017-web.pages.dev>**（Cloudflare Pages，免费）
+- 项目名：`ds-4-1-flash-1017-web`（Cloudflare 账号：Zacharypan87@gmail.com）
+- 发布方式：**Wrangler Direct Upload**（`wrangler pages deploy public`）。Cloudflare 2026 新界面把 Pages 的 Git 导入收进了 Workers 流程，界面里“导入 Git 仓库”建出来的是 Worker，而 `*.workers.dev` 在本机网络被解析到 127.0.0.1 / 502，所以改用官方 CLI 直接发 Pages。
+- 发布检查：首页 200 · 65,927 字节 · 标题正确；5 张图片 200 `image/jpeg`；`_headers` 生效（nosniff / Referrer-Policy / 图片 immutable 缓存）；Edge 1440 与 390 两个宽度 26 个请求、0 个非 200、0 失败、0 横向溢出、字体已加载。截图：`_shots/live-check/live-1440.jpg`、`live-390.jpg`。
+
 ### 已用 Edge 做过的本地验收（发布前的基线）
 
 我在这台机器上用 **Microsoft Edge（headless，155.0.4283.62）** 分别以 HTTP 服务、`file://` 两种方式打开 `public/index.html`，1440×900 与 390×844 两个尺寸：
@@ -124,7 +131,18 @@ git push -u origin main
 
 ---
 
-## 3. 第二步：连接 Cloudflare Pages（在 Edge 里操作）
+## 3. 连接 Cloudflare Pages
+
+> **实际采用的方式（已发布）**：Cloudflare 新 UI 的 Git 导入会生成 Worker（`workers.dev` 在部分网络不可达），因此本项目用官方 CLI 直传 Pages。以后更新执行：
+>
+> ```powershell
+> cd C:\Users\张锦鹏\Desktop\Mv\deepseek-4.1-flash-v2
+> npx --yes wrangler@4 pages deploy public --project-name=ds-4-1-flash-1017-web --branch=main --commit-dirty=true
+> ```
+>
+> 第一次在这台机器上需要 `npx wrangler@4 login`（浏览器里点 Allow 即可，已做过）。
+>
+> 下面 §3 的界面步骤仅作参考（如果你的 Cloudflare 账号仍能看到传统 Pages Git 表单，也可以按它走）。
 
 1. 用 **Edge** 打开 <https://dash.cloudflare.com/>，注册/登录（免费计划即可，**不需要先买域名**）。
 2. 左侧菜单 → **Workers & Pages** → 右上 **Create application** → 切到 **Pages** 标签 → **Connect to Git**。
@@ -147,7 +165,9 @@ git push -u origin main
 
 ---
 
-## 4. 第三步：告诉我网址，我来做访问检查
+## 4. 发布后检查（已完成）
+
+线上 URL：<https://ds-4-1-flash-1017-web.pages.dev>。检查结果见 §1「已发布」与 `_shots/live-check/report.json`。以下为检查清单：
 
 把 `https://xxxx.pages.dev` 发给我，我会用 **Edge（headless）+ HTTP** 检查：
 
@@ -178,10 +198,13 @@ git push -u origin main
 
 ```powershell
 cd C:\Users\张锦鹏\Desktop\Mv\deepseek-4.1-flash-v2
-# 改 public/index.html 或替换 public/assets/img/... 里的图片
+# 1) 改 public/index.html 或替换 public/assets/img/... 里的图片
+# 2) 提交到 GitHub
 git add -A
 git commit -m "update copy"
 git push
+# 3) 重新发布到 Cloudflare Pages（Git 自动部署在本项目里没有启用，需要手动这一条）
+npx --yes wrangler@4 pages deploy public --project-name=ds-4-1-flash-1017-web --branch=main --commit-dirty=true
 ```
 
 Cloudflare 检测到 `main` 分支新提交后会自动重新部署，约 30 秒后 pages.dev 域名生效。

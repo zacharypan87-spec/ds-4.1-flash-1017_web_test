@@ -1,6 +1,8 @@
 ﻿# DeepSeek 4.1 Flash 1017 · 概念发布页
 
 一个纯静态的单页宣传站（发布目录 `public/`，发布步骤见 `DEPLOY.md`）：双击 `public/index.html` 即可打开，无需构建、无需服务器。
+
+> 线上地址：<https://ds-4-1-flash-1017-web.pages.dev>（Cloudflare Pages 免费版）。
 字体走 Google Fonts（Noto Sans SC / Red Hat Display），断网时会回退到系统中文黑体，页面仍完整可读。
 
 > 版本名沿用你给的 **DeepSeek 4.1 Flash 1017**：出现在标题、导航、首屏文案、请求卡片构建号与页脚；首屏圆盘上有一枚液态玻璃的「版本 1017」胶囊。
