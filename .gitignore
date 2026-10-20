@@ -1,4 +1,4 @@
-# 本地开发产物，不进仓库、不发布
+﻿# 本地开发产物，不进仓库、不发布
 _shots/
 .taste-skill/
 node_modules/
@@ -8,3 +8,5 @@ node_modules/
 .DS_Store
 Thumbs.db
 desktop.ini
+# 临时 GitHub token（推送后立即删除，绝不提交）
+_token.txt
